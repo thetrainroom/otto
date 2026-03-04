@@ -1,0 +1,27 @@
+rocrail:
+  host: "localhost"
+  port: 8051
+
+voice:
+  mode: "push_to_talk"       # push_to_talk | disabled
+  key: "f9"                  # hotkey for push-to-talk
+  whisper_model: "base"      # tiny | base | small | medium | large-v3
+  tts_voice: "af_heart"      # kokoro voice ID
+  tts_speed: 1.0
+
+personality: "swiss_dispatcher"  # swiss_dispatcher | enthusiastic | passive_aggressive | hal9000
+
+layout:
+  name: "My Layout"
+  state_refresh_interval: 5  # seconds between state refreshes
+
+identity:
+  name: "OTTO"               # neutral default; overridden by gender
+  gender: "neutral"          # neutral | female | male
+
+monitoring:
+  enabled: true
+  timeout_multiplier: 3.0    # multiplier on learned segment times
+  minimum_timeout: 30        # seconds, cold-start fallback
+  silence_threshold: 120     # seconds without any block change
+  repeat_alert_interval: 60  # seconds between repeated alerts
