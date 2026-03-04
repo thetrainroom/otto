@@ -30,10 +30,7 @@ class Speaker:
             voices_path = MODELS_DIR / "voices-v1.0.bin"
 
             if not model_path.exists() or not voices_path.exists():
-                raise FileNotFoundError(
-                    f"Kokoro model files not found in {MODELS_DIR}. "
-                    "Run: python scripts/install_models.py"
-                )
+                raise FileNotFoundError(f"Kokoro model files not found in {MODELS_DIR}. " "Run: python scripts/install_models.py")
 
             self._kokoro = kokoro_onnx.Kokoro(str(model_path), str(voices_path))
             logger.info("Kokoro TTS loaded (voice=%s, speed=%.1f)", self.voice, self.speed)
@@ -44,7 +41,6 @@ class Speaker:
         """Synthesize and play text, blocking until complete."""
         self._ensure_loaded()
 
-        import numpy as np
         import sounddevice as sd
 
         samples, sample_rate = self._kokoro.create(text, voice=self.voice, speed=self.speed)

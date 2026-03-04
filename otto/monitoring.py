@@ -111,7 +111,7 @@ class TimingDatabase:
         samples.append(duration)
         # Rolling window
         if len(samples) > self.MAX_SAMPLES:
-            self._data[key] = samples[-self.MAX_SAMPLES:]
+            self._data[key] = samples[-self.MAX_SAMPLES :]
         self._save()
         logger.debug("Recorded timing %s: %.1fs (%d samples)", key, duration, len(self._data[key]))
 
@@ -204,18 +204,20 @@ class MonitoringSystem:
                 continue
 
             movement.last_alert_time = now
-            self._alerts.append(Alert(
-                alert_type="timeout",
-                message=f"{movement.loco_id} overdue: {movement.from_block}->{movement.to_block} "
-                        f"(expected {movement.expected_seconds:.0f}s, elapsed {movement.elapsed:.0f}s)",
-                data={
-                    "loco": movement.loco_id,
-                    "from_block": movement.from_block,
-                    "to_block": movement.to_block,
-                    "expected": movement.expected_seconds,
-                    "elapsed": movement.elapsed,
-                },
-            ))
+            self._alerts.append(
+                Alert(
+                    alert_type="timeout",
+                    message=f"{movement.loco_id} overdue: {movement.from_block}->{movement.to_block} "
+                    f"(expected {movement.expected_seconds:.0f}s, elapsed {movement.elapsed:.0f}s)",
+                    data={
+                        "loco": movement.loco_id,
+                        "from_block": movement.from_block,
+                        "to_block": movement.to_block,
+                        "expected": movement.expected_seconds,
+                        "elapsed": movement.elapsed,
+                    },
+                )
+            )
 
     def _check_silence(self):
         threshold = self.config.get("silence_threshold", 120)
@@ -225,18 +227,21 @@ class MonitoringSystem:
             # Only alert once per silence period (check last alert)
             if self._alerts and self._alerts[-1].alert_type == "silence":
                 return
-            self._alerts.append(Alert(
-                alert_type="silence",
-                message=f"No block changes for {silence_duration:.0f}s",
-                data={"seconds": silence_duration},
-            ))
+            self._alerts.append(
+                Alert(
+                    alert_type="silence",
+                    message=f"No block changes for {silence_duration:.0f}s",
+                    data={"seconds": silence_duration},
+                )
+            )
 
     # --- Public API for MCP tools ---
 
     def track_dispatch(self, loco_id: str, from_block: str, to_block: str):
         """Start tracking a dispatched locomotive."""
         expected = self.timing_db.estimate(
-            from_block, to_block,
+            from_block,
+            to_block,
             default=self.config.get("minimum_timeout", 30),
         )
         self.tracker.start_movement(loco_id, from_block, to_block, expected)
@@ -245,15 +250,17 @@ class MonitoringSystem:
         """Get all active movements with status."""
         result = []
         for loco_id, m in self.tracker.get_all().items():
-            result.append({
-                "loco": loco_id,
-                "from": m.from_block,
-                "to": m.to_block,
-                "elapsed": round(m.elapsed, 1),
-                "expected": round(m.expected_seconds, 1),
-                "overdue": m.is_overdue,
-                "acknowledged": m.acknowledged,
-            })
+            result.append(
+                {
+                    "loco": loco_id,
+                    "from": m.from_block,
+                    "to": m.to_block,
+                    "elapsed": round(m.elapsed, 1),
+                    "expected": round(m.expected_seconds, 1),
+                    "overdue": m.is_overdue,
+                    "acknowledged": m.acknowledged,
+                }
+            )
         return result
 
     def acknowledge_timeout(self, loco_id: str) -> dict:
@@ -269,9 +276,6 @@ class MonitoringSystem:
 
     def get_pending_alerts(self) -> list[dict]:
         """Get and clear pending alerts."""
-        alerts = [
-            {"type": a.alert_type, "message": a.message, "data": a.data, "timestamp": a.timestamp}
-            for a in self._alerts
-        ]
+        alerts = [{"type": a.alert_type, "message": a.message, "data": a.data, "timestamp": a.timestamp} for a in self._alerts]
         self._alerts.clear()
         return alerts

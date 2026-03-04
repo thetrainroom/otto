@@ -1,8 +1,14 @@
 # Claude Desktop Setup
 
-## MCP Server Configuration
+## Quick Setup
 
-Add OTTO to your Claude Desktop config file:
+1. Find where `otto` is installed:
+
+```bash
+which otto
+```
+
+2. Edit Claude Desktop's config file:
 
 **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 
@@ -10,22 +16,54 @@ Add OTTO to your Claude Desktop config file:
 {
   "mcpServers": {
     "otto": {
-      "command": "otto",
-      "env": {
-        "OTTO_CONFIG_PATH": "/path/to/otto/config/otto.yaml"
-      }
+      "command": "/Users/<you>/Library/Python/3.12/bin/otto",
+      "args": ["--host", "192.168.1.100"]
     }
   }
 }
 ```
 
-If `otto` is not on your PATH, use the full path:
+Replace the command path with the output of `which otto` and the host with your Rocrail server's IP.
+
+3. Fully quit Claude Desktop (Cmd+Q) and relaunch.
+
+4. Test by typing: **"What locomotives are on the layout?"**
+
+## Configuration Options
+
+### Option A: Host/port via CLI args
 
 ```json
 {
   "mcpServers": {
     "otto": {
-      "command": "/path/to/venv/bin/otto",
+      "command": "/path/to/otto",
+      "args": ["--host", "192.168.1.100", "--port", "8051"]
+    }
+  }
+}
+```
+
+### Option B: Config file
+
+```json
+{
+  "mcpServers": {
+    "otto": {
+      "command": "/path/to/otto",
+      "args": ["--config", "/path/to/otto/config/otto.yaml"]
+    }
+  }
+}
+```
+
+### Option C: Environment variable
+
+```json
+{
+  "mcpServers": {
+    "otto": {
+      "command": "/path/to/otto",
       "env": {
         "OTTO_CONFIG_PATH": "/path/to/otto/config/otto.yaml"
       }
@@ -34,21 +72,42 @@ If `otto` is not on your PATH, use the full path:
 }
 ```
 
-## Restart Claude Desktop
+## What You Get
 
-After editing the config, fully quit and relaunch Claude Desktop.
+Once connected, Claude Desktop has access to 87 tools for full layout control:
 
-## Verify
+- **Ask about the layout** — "What's happening on the layout?" / "Where is the BR 89?"
+- **Control locomotives** — "Set BR 89 speed to 40" / "Stop all trains"
+- **Manage routes** — "Set route from block 1 to block 5"
+- **Control signals & switches** — "Set signal S1 to green" / "Flip switch W3"
+- **Automation** — "Start automation" / "Assign schedule Express to BR 89"
+- **System** — "Power off" / "Save the layout"
+- **Voice** — "Speak: Train arriving at platform 2" (if voice daemon is running)
 
-Type in Claude Desktop:
+## Checking Logs
 
-> What locomotives are on the layout?
+If something isn't working, check the MCP server logs. On macOS, Claude Desktop writes logs to:
 
-Claude should use the `get_layout_state` tool and return real data from your Rocrail server.
+```
+~/Library/Logs/Claude/
+```
 
-## Using with Voice
+Look for lines containing `otto` to see connection status and errors.
 
-1. Start the voice daemon in a terminal: `otto-voice`
-2. Press F9 to talk, release to send
-3. Your speech is transcribed and typed into Claude Desktop
-4. Claude's responses can be spoken aloud via the `speak` tool
+## Adding Alongside Other MCP Servers
+
+OTTO can coexist with other MCP servers:
+
+```json
+{
+  "mcpServers": {
+    "otto": {
+      "command": "/path/to/otto",
+      "args": ["--host", "192.168.1.100"]
+    },
+    "other-server": {
+      "command": "/path/to/other"
+    }
+  }
+}
+```

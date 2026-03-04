@@ -31,7 +31,7 @@ def main():
         switches = client.model.get_switches()
         signals = client.model.get_signals()
 
-        print(f"\nLayout Summary:")
+        print("\nLayout Summary:")
         print(f"  Locomotives: {len(locos)}")
         print(f"  Blocks:      {len(blocks)}")
         print(f"  Routes:      {len(routes)}")
@@ -39,7 +39,7 @@ def main():
         print(f"  Signals:     {len(signals)}")
 
         if locos:
-            print(f"\nLocomotives:")
+            print("\nLocomotives:")
             for loco_id, loco in locos.items():
                 direction = "fwd" if loco.dir else "rev"
                 block = getattr(loco, "blockid", "?")
