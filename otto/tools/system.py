@@ -2,7 +2,6 @@
 
 from otto.tools._registry import mcp, get_client
 
-
 # --- Power ---
 
 

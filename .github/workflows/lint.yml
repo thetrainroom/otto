@@ -17,10 +17,10 @@ jobs:
           python-version: "3.12"
 
       - name: Install tools
-        run: pip install ruff black
+        run: pip install ruff 'black>=26'
 
       - name: Ruff
         run: ruff check .
 
       - name: Black
-        run: black --check --line-length 180 .
+        run: black --check .
