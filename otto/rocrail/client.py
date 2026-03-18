@@ -971,6 +971,21 @@ class RocrailClient:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+    def get_recent_errors(self, limit: int = 20) -> list[dict]:
+        """Get recent server error and warning messages."""
+        self._ensure_connected()
+        exceptions = self.model.get_exceptions(limit)
+        return [
+            {
+                "level": exc.level,
+                "code": exc.code,
+                "text": exc.text,
+                "object_id": exc.obj_id,
+                "timestamp": exc.timestamp.isoformat(),
+            }
+            for exc in exceptions
+        ]
+
     # =========================================================================
     # System control
     # =========================================================================
