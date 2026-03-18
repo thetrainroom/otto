@@ -61,3 +61,31 @@ def set_text(text_id: str, format_str: str) -> dict:
 def location_info(location_id: str, svalue: str | None = None) -> dict:
     """Set or query location information."""
     return get_client().location_info(location_id, svalue)
+
+
+@mcp.tool()
+def list_locations() -> list[dict]:
+    """List all locations with their blocks and occupancy settings."""
+    return get_client().list_locations()
+
+
+@mcp.tool()
+def set_location_minocc(location_id: str, minocc: int) -> dict:
+    """Set the minimum occupancy for a location (minimum trains that must remain).
+
+    Args:
+        location_id: The location ID
+        minocc: Minimum number of trains that must remain in the location
+    """
+    return get_client().set_location_minocc(location_id, minocc)
+
+
+@mcp.tool()
+def set_location_maxocc(location_id: str, maxocc: int) -> dict:
+    """Set the maximum occupancy for a location (maximum trains allowed).
+
+    Args:
+        location_id: The location ID
+        maxocc: Maximum number of trains allowed in the location
+    """
+    return get_client().set_location_maxocc(location_id, maxocc)
