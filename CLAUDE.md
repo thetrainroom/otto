@@ -9,7 +9,9 @@ OTTO exposes Rocrail layout control as MCP tools for Claude Desktop, with an opt
 - **Voice Daemon** (`otto/voice_daemon.py`) — separate process, push-to-talk with pynput, types into Claude Desktop via clipboard paste
 
 ## Key Files
-- `otto/mcp_server.py` — MCP entry point, all tool definitions
+- `otto/mcp_server.py` — MCP entry point, imports tool modules and wires up config/client
+- `otto/tools/_registry.py` — shared FastMCP instance and global state accessors
+- `otto/tools/*.py` — 15 tool modules (layout, locomotive, blocks, routes, switches, signals, feedback, outputs, staging, cars, automation, system, extras, monitoring, voice)
 - `otto/rocrail/client.py` — PyRocrail wrapper with clean dict-returning API
 - `otto/layout.py` — topology graph builder, human-readable state summaries
 - `otto/personality.py` — response style definitions, system prompt builder
@@ -18,10 +20,11 @@ OTTO exposes Rocrail layout control as MCP tools for Claude Desktop, with an opt
 - `otto/voice/speaker.py` — kokoro-onnx TTS
 - `otto/voice/transcriber.py` — faster-whisper STT
 - `otto/voice/speech_queue.py` — file-based TTS bridge between MCP and voice daemon
+- `scripts/install_models.py` — download TTS/STT models
+- `tests/` — test suite (client, config, monitoring, personality, speech queue, tool registration)
 
 ## Dependencies
-- PyRocrail: installed separately as `pip install -e /path/to/py-rocrail/`
-- Core: `mcp`, `pyyaml`, `thefuzz`
+- Core: `mcp`, `pyrocrail`, `pyyaml`, `thefuzz`
 - Voice (optional): `faster-whisper`, `kokoro-onnx`, `sounddevice`, `soundfile`, `pyautogui`, `pynput`, `numpy`, `pyperclip`
 
 ## Running

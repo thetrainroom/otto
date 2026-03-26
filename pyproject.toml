@@ -9,11 +9,15 @@ description = "AI voice controller for model railways — Rocrail layout control
 requires-python = ">=3.12"
 dependencies = [
     "mcp[cli]>=1.0.0",
+    "pyrocrail",
     "pyyaml>=6.0",
     "thefuzz>=0.22.0",
 ]
 
 [project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
 voice = [
     "faster-whisper",
     "kokoro-onnx",

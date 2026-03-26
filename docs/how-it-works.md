@@ -378,7 +378,7 @@ No cloud APIs are used for voice — everything runs locally.
 | Tool | Parameters | Description |
 |------|-----------|-------------|
 | `set_loco_speed` | `loco_id`, `speed` (0-100) | Set speed |
-| `set_loco_direction` | `loco_id`, `direction` | Set direction (true=forward) |
+| `set_loco_direction` | `loco_id`, `direction` | Set direction: forward / reverse / toggle |
 | `go_loco_forward` | `loco_id`, `speed` (optional) | Direction forward + optional speed |
 | `go_loco_reverse` | `loco_id`, `speed` (optional) | Direction reverse + optional speed |
 | `set_loco_function` | `loco_id`, `function`, `state` | Control decoder function (lights, sound, horn) |
