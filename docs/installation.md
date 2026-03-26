@@ -4,24 +4,18 @@
 
 - **Python 3.12+**
 - **Rocrail** running with TCP server enabled (default port 8051)
-- **Claude Desktop** installed
-- **PyRocrail** library
+- **An MCP-compatible AI client** — OTTO uses the standard MCP stdio transport, so it works with any client that supports MCP, including:
+  - [Claude Desktop](https://claude.ai/download)
+  - [ChatGPT Desktop](https://openai.com/chatgpt/desktop/)
+  - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (CLI)
+  - [Gemini CLI](https://github.com/google-gemini/gemini-cli)
+  - [Cursor](https://www.cursor.com/)
+  - [VS Code](https://code.visualstudio.com/) (with Copilot)
+  - [Windsurf](https://windsurf.com/)
 
 ---
 
-## Step 1: Install PyRocrail
-
-PyRocrail is the underlying library that handles all Rocrail TCP communication.
-
-```bash
-# From a local clone:
-python3.12 -m pip install -e /path/to/py-rocrail/
-
-# Or from PyPI (when published):
-# python3.12 -m pip install pyrocrail
-```
-
-## Step 2: Install OTTO
+## Step 1: Install OTTO
 
 ```bash
 # Clone the repo
@@ -46,7 +40,7 @@ which otto
 # Typical output: /Users/<you>/Library/Python/3.12/bin/otto
 ```
 
-## Step 3: Create Configuration
+## Step 2: Create Configuration
 
 ```bash
 cp config/otto.yaml.example config/otto.yaml
@@ -81,7 +75,7 @@ You can also set the config path via environment variable:
 export OTTO_CONFIG_PATH=/path/to/otto.yaml
 ```
 
-## Step 4: Test the Connection
+## Step 3: Test the Connection
 
 Make sure Rocrail is running, then:
 
@@ -94,9 +88,13 @@ You should see a layout summary with locomotive count, block count, routes, etc.
 - The host IP and port are correct in `otto.yaml`
 - No firewall is blocking TCP port 8051
 
-## Step 5: Configure Claude Desktop
+## Step 4: Configure Your MCP Client
 
-Edit the Claude Desktop config file:
+OTTO works with any MCP-compatible client. Below are setup instructions for the most common ones.
+
+### Claude Desktop
+
+Edit the config file:
 
 **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 
@@ -130,6 +128,23 @@ Replace:
 }
 ```
 
+### ChatGPT Desktop
+
+Go to **Settings → MCP Servers → Add Server**, then enter:
+
+- **Name:** otto
+- **Command:** the output of `which otto`
+- **Arguments:** `--host 192.168.1.100` (your Rocrail IP)
+
+### Other clients
+
+For any MCP client, the key information is:
+- **Command:** the path from `which otto`
+- **Arguments:** `--host <rocrail-ip>` or `--config /path/to/otto.yaml`
+- **Transport:** stdio (the default)
+
+Refer to your client's documentation for how to add MCP servers.
+
 ### All CLI options
 
 | Argument | Description |
@@ -138,17 +153,17 @@ Replace:
 | `--port` | Rocrail TCP port (overrides config file) |
 | `--config` | Path to `otto.yaml` config file |
 
-## Step 6: Restart Claude Desktop
+## Step 5: Restart Your Client
 
-Fully quit Claude Desktop (Cmd+Q on macOS) and relaunch it. The MCP server starts automatically as a subprocess.
+Restart your MCP client to pick up the new server configuration. For Claude Desktop, fully quit (Cmd+Q on macOS) and relaunch.
 
-## Step 7: Verify It Works
+## Step 6: Verify It Works
 
-In Claude Desktop, type:
+In your MCP client, type:
 
 > What locomotives are on the layout?
 
-Claude should call the `get_layout_state` tool and return real data from your Rocrail server — locomotive names, which blocks they're in, their speeds, etc.
+The AI should call the `get_layout_state` tool and return real data from your Rocrail server — locomotive names, which blocks they're in, their speeds, etc.
 
 Try a few more commands:
 
