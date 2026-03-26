@@ -76,3 +76,16 @@ def fire_event(event_id: str) -> dict:
 def start_loco_in_block(block_id: str) -> dict:
     """Auto-detect and start the locomotive in a block or staging block."""
     return get_client().start_loco_in_block(block_id)
+
+
+@mcp.tool()
+def get_recent_errors(limit: int = 20) -> list[dict]:
+    """Get recent Rocrail server errors and warnings.
+
+    Use this to diagnose problems — returns the most recent error messages
+    from the server with level, code, text, and timestamp.
+
+    Args:
+        limit: Maximum number of errors to return (default 20, max 50)
+    """
+    return get_client().get_recent_errors(min(limit, 50))

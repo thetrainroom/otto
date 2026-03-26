@@ -934,6 +934,58 @@ class RocrailClient:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+    def list_locations(self) -> list[dict]:
+        """List all locations with their blocks and occupancy settings."""
+        self._ensure_connected()
+        locations = self.model.get_locations()
+        return [
+            {
+                "id": loc_id,
+                "blocks": loc.get_blocks(),
+                "subblocks": loc.get_subblocks(),
+                "minocc": loc.minocc,
+                "maxocc": loc.maxocc,
+                "fifo": loc.fifo,
+                "scheduleid": loc.scheduleid,
+            }
+            for loc_id, loc in sorted(locations.items())
+        ]
+
+    def set_location_minocc(self, location_id: str, minocc: int) -> dict:
+        """Set the minimum occupancy for a location."""
+        self._ensure_connected()
+        try:
+            loc = self.model.get_location(location_id)
+            loc.set_minocc(minocc)
+            return {"success": True, "location": location_id, "minocc": minocc}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def set_location_maxocc(self, location_id: str, maxocc: int) -> dict:
+        """Set the maximum occupancy for a location."""
+        self._ensure_connected()
+        try:
+            loc = self.model.get_location(location_id)
+            loc.set_maxocc(maxocc)
+            return {"success": True, "location": location_id, "maxocc": maxocc}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_recent_errors(self, limit: int = 20) -> list[dict]:
+        """Get recent server error and warning messages."""
+        self._ensure_connected()
+        exceptions = self.model.get_exceptions(limit)
+        return [
+            {
+                "level": exc.level,
+                "code": exc.code,
+                "text": exc.text,
+                "object_id": exc.obj_id,
+                "timestamp": exc.timestamp.isoformat(),
+            }
+            for exc in exceptions
+        ]
+
     # =========================================================================
     # System control
     # =========================================================================
